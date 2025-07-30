@@ -1,0 +1,60 @@
+name: Generate SBOM for npm project (CycloneDX + SPDX)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Optional: verify versions for debugging
+      - name: Display Node & NPM version
+        run: node -v && npm -v
+
+      # Only install compatible version of npm
+      - name: Install npm v10
+        run: npm install -g npm@10
+
+      # Install project dependencies
+      - name: Install dependencies
+        run: |
+          echo "Running npm install"
+          npm install
+
+      #################### CycloneDX SBOM ####################
+      - name: Install CycloneDX SBOM CLI
+        run: npm install -g @cyclonedx/bom
+
+      - name: Generate CycloneDX SBOM
+        run: cyclonedx-bom -o sbom-cyclonedx.json
+
+      #################### SPDX SBOM ####################
+      - name: Install SPDX SBOM Generator
+        run: npm install -g spdx-sbom-generator
+
+      - name: Generate SPDX SBOM (JSON)
+        run: spdx-sbom-generator -o sbom-spdx --format json
+
+      #################### Upload Artifacts ####################
+      - name: Upload CycloneDX SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom-cyclonedx.json
+
+      - name: Upload SPDX SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-spdx
+          path: sbom-spdx/spdx-sbom.json
