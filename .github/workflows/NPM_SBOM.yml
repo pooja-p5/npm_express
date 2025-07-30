@@ -1,4 +1,4 @@
-name: Generate SBOM for npm project (CycloneDX + SPDX)
+name: Generate SBOM for npm project  (SPDX)
 
 on:
   push:
@@ -32,13 +32,6 @@ jobs:
           echo "Running npm install"
           npm install
 
-      #################### CycloneDX SBOM ####################
-      - name: Install CycloneDX SBOM CLI
-        run: npm install -g @cyclonedx/bom
-
-      - name: Generate CycloneDX SBOM
-        run: cyclonedx-bom -o sbom-cyclonedx.json
-
       #################### SPDX SBOM ####################
       - name: Install SPDX SBOM Generator
         run: npm install -g spdx-sbom-generator
@@ -47,11 +40,6 @@ jobs:
         run: spdx-sbom-generator -o sbom-spdx --format json
 
       #################### Upload Artifacts ####################
-      - name: Upload CycloneDX SBOM
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-cyclonedx
-          path: sbom-cyclonedx.json
 
       - name: Upload SPDX SBOM
         uses: actions/upload-artifact@v4
