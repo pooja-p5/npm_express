@@ -30,13 +30,8 @@ jobs:
       - name: Run Microsoft SBOM Tool
         run: |
           mkdir -p sbom-output
-          sbom-tool generate \
-            --build-drop-path ./node_modules \
-            --manifest-file ./package-lock.json \
-            --manifest-type npm \
-            --package-name "$(jq -r .name package.json)" \
-            --package-version "$(jq -r .version package.json)" \
-            --output-path ./sbom-output
+          sbom-tool generate -b . -bc . -pn npm_prj -pv 1.0.0 -ps Philips_test_npm -nsb https://sbom.philips.com -V Verbose -o sbom-output
+
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
