@@ -22,7 +22,7 @@ jobs:
         run: npm install 
 
       - name: Generate SPDX SBOM using npm
-        run: npm sbom > sbom.spdx.json
+        run: npm sbom --sbom-format spdx > sbom.spdx.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
