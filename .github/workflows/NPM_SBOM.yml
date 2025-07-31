@@ -1,9 +1,9 @@
-name: Generate SBOM for npm project  (SPDX)
+name: Generate SBOM with npm
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual run from GitHub UI
 
 jobs:
   generate-sbom:
@@ -13,36 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '20' # or any version >= 16.20.0 that supports npm 9.5+
 
-      # Optional: verify versions for debugging
-      - name: Display Node & NPM version
-        run: node -v && npm -v
-
-      # Only install compatible version of npm
-      - name: Install npm v10
-        run: npm install -g npm@10
-
-      # Install project dependencies
       - name: Install dependencies
-        run: |
-          echo "Running npm install"
-          npm install
+        run: npm ci
 
-      #################### SPDX SBOM ####################
-      - name: Install SPDX SBOM Generator
-        run: npm install -g spdx-sbom-generator
+      - name: Generate SPDX SBOM using npm
+        run: npm sbom > sbom.spdx.json
 
-      - name: Generate SPDX SBOM (JSON)
-        run: spdx-sbom-generator -o sbom-spdx --format json
-
-      #################### Upload Artifacts ####################
-
-      - name: Upload SPDX SBOM
+      - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
           name: sbom-spdx
-          path: sbom-spdx/spdx-sbom.json
+          path: sbom.spdx.json
