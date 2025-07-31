@@ -30,7 +30,7 @@ jobs:
       - name: Run Microsoft SBOM Tool
         run: |
           mkdir -p sbom-output
-          sbom-tool generate -b . -bc . -pn npm_prj -pv 1.0.0 -ps Philips_test_npm -nsb https://sbom.philips.com -V Verbose -o sbom-output
+          sbom-tool generate -b . -bc . -pn npm_prj -pv 1.0.0 -ps Philips_test_npm -nsb https://sbom.philips.com -V Verbose -m ./sbom-output
 
 
       - name: Upload SBOM artifact
