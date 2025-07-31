@@ -19,7 +19,7 @@ jobs:
           node-version: '20' # or any version >= 16.20.0 that supports npm 9.5+
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install 
 
       - name: Generate SPDX SBOM using npm
         run: npm sbom > sbom.spdx.json
