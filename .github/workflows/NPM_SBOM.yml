@@ -24,7 +24,16 @@ jobs:
       - name: Generate SPDX SBOM using npm
         run: npm sbom --sbom-format spdx > sbom.spdx.json
 
-      - name: Upload SBOM artifact
+      - name: Generate CycloneDX SBOM
+        run: npm sbom --sbom-format cyclonedx > sbom.cyclonedx.json
+
+      - name: Upload SBOM artifact CycloneDX
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: sbom.cyclonedx.json
+
+      - name: Upload SBOM artifact SPDX
         uses: actions/upload-artifact@v4
         with:
           name: sbom-spdx
